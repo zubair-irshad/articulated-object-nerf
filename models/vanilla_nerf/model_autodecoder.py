@@ -454,7 +454,11 @@ class LitNeRF_AutoDecoder(LitModel):
         appearance_code = latents["color"]
         articulation_code = latents["articulation"]
 
-        reg_loss = torch.norm(shape_code, dim=0) + torch.norm(appearance_code, dim=0) + torch.norm(articulation_code, dim=)
+        reg_loss = (
+            torch.norm(shape_code, dim=0)
+            + torch.norm(appearance_code, dim=0)
+            + torch.norm(articulation_code, dim=0)
+        )
         reg_loss = 1e-4 * torch.mean(reg_loss)
         loss += reg_loss
 
