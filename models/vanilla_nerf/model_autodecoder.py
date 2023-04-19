@@ -450,12 +450,21 @@ class LitNeRF_AutoDecoder(LitModel):
         self.log("train/opacity_loss", opacity_loss, on_step=True)
         loss += opacity_loss
 
+        shape_code = latents["shape"]
+        appearance_code = latents["appearance"]
+        articulation_code = latents["articulation"]
+
+        reg_loss = torch.norm(shape_code, dim=0) + torch.norm(appearance_code, dim=0) + torch.norm(articulation_code, dim=)
+        reg_loss = 1e-4 * torch.mean(reg_loss)
+        loss += reg_loss
+
         psnr0 = helper.mse2psnr(loss0)
         psnr1 = helper.mse2psnr(loss1)
 
         self.log("train/psnr1", psnr1, on_step=True, prog_bar=True, logger=True)
         self.log("train/psnr0", psnr0, on_step=True, prog_bar=True, logger=True)
         self.log("train/loss", loss, on_step=True)
+        self.log("train/loss/reg", reg_loss, on_step=True)
         self.log("train/lr", helper.get_learning_rate(self.optimizers()))
 
         return loss
