@@ -420,10 +420,13 @@ class LitNeRF_AutoDecoder(LitModel):
         rgb_fine = rendered_results[1][0]
         target = batch["target"]
 
-        mask = batch["instance_mask"].view(-1, 1).repeat(1, 3)
+        # mask = batch["instance_mask"].view(-1, 1).repeat(1, 3)
 
-        loss0 = helper.img2mse(rgb_coarse[mask], target[mask])
-        loss1 = helper.img2mse(rgb_fine[mask], target[mask])
+        # loss0 = helper.img2mse(rgb_coarse[mask], target[mask])
+        # loss1 = helper.img2mse(rgb_fine[mask], target[mask])
+
+        loss0 = helper.img2mse(rgb_coarse, target)
+        loss1 = helper.img2mse(rgb_fine, target)
 
         # loss0 = helper.img2mse(rgb_coarse, target)
         # loss1 = helper.img2mse(rgb_fine, target)
