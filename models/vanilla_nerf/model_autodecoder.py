@@ -246,8 +246,8 @@ class NeRF_AE_Art(nn.Module):
         min_deg_point: int = 0,
         max_deg_point: int = 10,
         deg_view: int = 4,
-        num_coarse_samples: int = 64,
-        num_fine_samples: int = 128,
+        num_coarse_samples: int = 128,
+        num_fine_samples: int = 256,
         use_viewdirs: bool = True,
         noise_std: float = 0.0,
         lindisp: bool = False,
@@ -263,8 +263,8 @@ class NeRF_AE_Art(nn.Module):
         super(NeRF_AE_Art, self).__init__()
 
         self.rgb_activation = nn.Sigmoid()
-        self.sigma_activation = nn.ReLU()
-        # self.sigma_activation = nn.Softplus()
+        # self.sigma_activation = nn.ReLU()
+        self.sigma_activation = nn.Softplus()
         self.coarse_mlp = NeRFMLP(min_deg_point, max_deg_point, deg_view)
         self.fine_mlp = NeRFMLP(min_deg_point, max_deg_point, deg_view)
         # self.joint_state_decoder = JointStateDecoder()
@@ -319,9 +319,9 @@ class NeRF_AE_Art(nn.Module):
                 raw_sigma = raw_sigma + torch.rand_like(raw_sigma) * self.noise_std
 
             rgb = self.rgb_activation(raw_rgb)
-            # rgb = rgb * (1 + 2 * self.rgb_padding) - self.rgb_padding
-            # sigma = self.sigma_activation(raw_sigma + self.density_bias)
-            sigma = self.sigma_activation(raw_sigma)
+            rgb = rgb * (1 + 2 * self.rgb_padding) - self.rgb_padding
+            sigma = self.sigma_activation(raw_sigma + self.density_bias)
+            # sigma = self.sigma_activation(raw_sigma)
 
             comp_rgb, acc, weights, depth = helper.volumetric_rendering(
                 rgb,
@@ -332,7 +332,7 @@ class NeRF_AE_Art(nn.Module):
             )
 
             # ret.append((comp_rgb, acc))
-            ret.append((comp_rgb, acc))
+            ret.append((comp_rgb, acc, depth))
 
         return ret
 
@@ -481,6 +481,7 @@ class LitNeRF_AutoDecoder(LitModel):
             # here 1 denotes fine
             ret["comp_rgb"] += [rendered_results_chunk[1][0]]
             ret["acc"] += [rendered_results_chunk[1][1]]
+            ret["depth"] += [rendered_results_chunk[1][2]]
             # for k, v in rendered_results_chunk[1].items():
             #     ret[k] += [v]
         for k, v in ret.items():
@@ -557,7 +558,7 @@ class LitNeRF_AutoDecoder(LitModel):
         # rank =0
         if rank == 0:
             if batch_idx == self.random_batch:
-                grid_img = visualize_val_rgb_opacity((W, H), batch, ret)
+                grid_img = visualize_val_rgb_opa_depth((W, H), batch, ret)
                 self.logger.experiment.log({"val/GT_pred rgb": wandb.Image(grid_img)})
 
         return ret
@@ -690,7 +691,7 @@ class LitNeRF_AutoDecoder(LitModel):
         return loss
 
     def opacity_loss_CE(self, rendered_results, instance_mask):
-        opacity_lambda = 0.5
+        opacity_lambda = 0.05
         criterion = nn.BCEWithLogitsLoss()
         loss = (
             criterion(
