@@ -18,7 +18,7 @@ class CodeLibraryArticulated(nn.Module):
         super(CodeLibraryArticulated, self).__init__()
 
         N_max_articulations = 10
-        N_art_code_length = 16
+        N_art_code_length = 32
         self.embedding_instance_shape = torch.nn.Embedding(
             hparams.N_max_objs, hparams.N_obj_code_length
         )
