@@ -41,7 +41,7 @@ class SapienDatasetMulti(Dataset):
         self.img_wh = img_wh
         self.define_transforms()
         self.ids = np.sort([f.name for f in os.scandir(self.root_dir)])
-        self.samples_per_epoch = 8000
+        self.samples_per_epoch = 4000
         self.white_back = white_back
         # bounds, common for all scenes
         self.near = 2.0
