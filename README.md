@@ -28,8 +28,13 @@ Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. C
     
 # :key: Training
 
+* Single Instance Overfitting training
 ``` python run.py --dataset_name sapien --root_dir /experiments/zubair/datasets/sapien_single_scene --exp_name sapien_single_scene_vanilla --exp_type vanilla --img_wh 640 480 --white_back --batch_size 1 --num_gpus 1 --num_gpus 8  --num_epochs 100```
 
+
+* Single Instance Articulated Overfitting
+
+``` CUDA_VISIBLE_DEVICES=0,2,3,4,5,6,7 python run.py --dataset_name sapien_multi --root_dir /experiments/zubair/datasets/sapien_single_scene_art --exp_name sapien_single_scene_articulated --exp_type vanilla_autodecoder --img_wh 320 240 --white_back --batch_size 1 --num_gpus 7 ```
 
 # :key: Evaluation
 
