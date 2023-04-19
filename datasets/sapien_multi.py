@@ -265,7 +265,7 @@ class SapienDatasetMulti(Dataset):
             instance_dir = self.ids[val_idx]
             deg_paths = [
                 f.name
-                for f in os.scandir(os.path.join(self.root_dir, instance_dir, "val"))
+                for f in os.scandir(os.path.join(self.root_dir, instance_dir, "train"))
             ]
 
             sorted_indices = np.argsort(
@@ -292,7 +292,7 @@ class SapienDatasetMulti(Dataset):
             sample["src_imgs"] = src_img
             sample["target"] = rgbs
             sample["instance_mask"] = mask
-            sample["deg"] = np.deg2rad(idx_to_deg["val"][deg_idx]).astype(np.float32)
+            sample["deg"] = np.deg2rad(idx_to_deg["train"][deg_idx]).astype(np.float32)
             sample["img_wh"] = np.array((w, h))
             sample["instance_id"] = train_idx
             sample["articulation_id"] = deg_idx
