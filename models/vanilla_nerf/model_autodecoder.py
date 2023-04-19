@@ -341,7 +341,7 @@ class LitNeRF_AutoDecoder(LitModel):
     def __init__(
         self,
         hparams,
-        lr_init: float = 5.0e-4,
+        lr_init: float = 3.0e-3,
         lr_final: float = 5.0e-6,
         lr_delay_steps: int = 2500,
         lr_delay_mult: float = 0.01,
@@ -591,9 +591,8 @@ class LitNeRF_AutoDecoder(LitModel):
         return self.render_rays_test(batch, batch_idx)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(
-            params=self.parameters(), lr=self.lr_init, betas=(0.9, 0.999)
-        )
+        params = list(self.model.parameters()) + list(self.code_library.parameters())
+        return torch.optim.Adam(params=params, lr=self.lr_init, betas=(0.9, 0.999))
 
     def optimizer_step(
         self,
@@ -629,7 +628,7 @@ class LitNeRF_AutoDecoder(LitModel):
         return DataLoader(
             self.train_dataset,
             shuffle=True,
-            num_workers=16,
+            num_workers=8,
             batch_size=1,
             pin_memory=True,
         )
