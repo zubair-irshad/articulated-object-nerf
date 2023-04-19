@@ -337,7 +337,7 @@ class NeRF_AE_Art(nn.Module):
         return ret
 
 
-class LitNeRF_AutoDecoder_ART(LitModel):
+class LitNeRF_AutoDecoder(LitModel):
     def __init__(
         self,
         hparams,
@@ -352,7 +352,7 @@ class LitNeRF_AutoDecoder_ART(LitModel):
                 print(name, value)
                 setattr(self, name, value)
         self.hparams.update(vars(hparams))
-        super(LitNeRF_AutoDecoder_ART, self).__init__()
+        super(LitNeRF_AutoDecoder, self).__init__()
         self.model = NeRF_AE_Art()
         self.code_library = CodeLibraryArticulated(self.hparams)
 
