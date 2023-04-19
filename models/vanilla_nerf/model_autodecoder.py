@@ -323,7 +323,7 @@ class NeRF_AE_Art(nn.Module):
             # sigma = self.sigma_activation(raw_sigma + self.density_bias)
             sigma = self.sigma_activation(raw_sigma)
 
-            comp_rgb, acc, weights = helper.volumetric_rendering(
+            comp_rgb, acc, weights, depth = helper.volumetric_rendering(
                 rgb,
                 sigma,
                 t_vals,
