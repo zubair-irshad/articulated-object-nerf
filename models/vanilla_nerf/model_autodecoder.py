@@ -437,9 +437,9 @@ class LitNeRF_AutoDecoder(LitModel):
 
         # opacity loss
 
-        opacity_loss = self.opacity_loss_CE(
-            rendered_results, batch["instance_mask"].view(-1)
-        )
+        # opacity_loss = self.opacity_loss_CE(
+        #     rendered_results, batch["instance_mask"].view(-1)
+        # )
 
         # opacity_loss = self.opacity_loss(
         #         rendered_results, batch["instance_mask"].view(-1)
@@ -447,8 +447,8 @@ class LitNeRF_AutoDecoder(LitModel):
         # opacity_loss = self.opacity_loss_autorf(
         #         rendered_results, batch["instance_mask"].view(-1)
         #     )
-        self.log("train/opacity_loss", opacity_loss, on_step=True)
-        loss += opacity_loss
+        # self.log("train/opacity_loss", opacity_loss, on_step=True)
+        # loss += opacity_loss
 
         shape_code = latents["density"]
         appearance_code = latents["color"]
