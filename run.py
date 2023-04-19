@@ -14,6 +14,7 @@ import numpy as np
 
 from models.vanilla_nerf.model import LitNeRF
 from models.vanilla_nerf.model_ae_art import LitNeRF_AE_ART
+from models.vanilla_nerf.model_autodecoder import LitNeRF_AutoDecoder
 
 
 def main(hparams):
@@ -24,6 +25,11 @@ def main(hparams):
 
     elif hparams.exp_type == "vanilla_ae_art":
         system = LitNeRF_AE_ART(
+            hparams=hparams
+        )  # Needs to modify this to train for 3 test images
+
+    elif hparams.exp_type == "vanilla_autodecoder":
+        system = LitNeRF_AutoDecoder(
             hparams=hparams
         )  # Needs to modify this to train for 3 test images
 
