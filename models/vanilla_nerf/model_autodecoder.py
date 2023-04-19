@@ -535,7 +535,7 @@ class LitNeRF_AutoDecoder(LitModel):
 
         # latents = self.model.encode(batch["src_imgs"].unsqueeze(0))
 
-        latents = self.code_library(batch["instance_ids"], batch["articulation_ids"])
+        latents = self.code_library(batch)
 
         # # regress joint state values here:
         # embedding_instance_articulation = latents["articulation"]  # B,32
