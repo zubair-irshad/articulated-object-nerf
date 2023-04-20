@@ -628,9 +628,9 @@ class LitNeRF_AutoDecoder(LitModel):
         return DataLoader(
             self.train_dataset,
             shuffle=True,
-            num_workers=8,
+            num_workers=0,
             batch_size=1,
-            pin_memory=True,
+            pin_memory=False,
         )
 
     def val_dataloader(self):
