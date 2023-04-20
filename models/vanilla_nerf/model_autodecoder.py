@@ -341,7 +341,7 @@ class LitNeRF_AutoDecoder(LitModel):
     def __init__(
         self,
         hparams,
-        lr_init: float = 3.0e-3,
+        lr_init: float = 5.0e-4,
         lr_final: float = 5.0e-6,
         lr_delay_steps: int = 2500,
         lr_delay_mult: float = 0.01,
