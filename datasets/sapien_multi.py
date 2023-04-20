@@ -246,7 +246,7 @@ class SapienDatasetMulti(Dataset):
                 instance_dir, degree_dir, image_id
             )
             rays, rays_d, view_dirs, src_img, rgbs, mask = self.get_ray_batch(
-                cam_rays, cam_view_dirs, cam_rays_d, img, seg, ray_batch_size=1024
+                cam_rays, cam_view_dirs, cam_rays_d, img, seg, ray_batch_size=2048
             )
 
             sample = {}
