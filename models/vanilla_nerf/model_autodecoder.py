@@ -585,7 +585,7 @@ class LitNeRF_AutoDecoder(LitModel):
                 continue
             batch[k] = v.squeeze(0)
 
-        articulation_emb = latents["articulation"]
+        # articulation_emb = latents["articulation"]
 
         # for k, v in batch.items():
         #     if k == "deg":
@@ -595,7 +595,7 @@ class LitNeRF_AutoDecoder(LitModel):
         #         batch[k] = v.unsqueeze(-1)
         #     if k == "near_obj" or k == "far_obj":
         #         batch[k] = batch[k].unsqueeze(-1)
-        latents = self.code_library(batch)
+        latents = self.code_library(batch, is_test=True)
         return self.render_rays_test(batch, latents)
 
     def configure_optimizers(self):
