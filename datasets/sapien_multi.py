@@ -52,7 +52,7 @@ class SapienDatasetMulti(Dataset):
         if eval_inference is not None:
             # eval_num = int(self.eval_inference[0])
             # num =  100 - eval_num
-            num = 60
+            num = 10
             self.image_sizes = np.array([[h, w] for i in range(num)])
         else:
             self.image_sizes = np.array([[h, w] for i in range(1)])
@@ -260,7 +260,7 @@ class SapienDatasetMulti(Dataset):
             sample["instance_id"] = train_idx
             sample["articulation_id"] = deg_idx
 
-        else:  # create data for each image separately
+        elif self.split == "val":  # create data for each image separately
             val_idx = random.randint(0, len(self.ids) - 1)
             instance_dir = self.ids[val_idx]
             deg_paths = [
@@ -297,4 +297,41 @@ class SapienDatasetMulti(Dataset):
             sample["instance_id"] = val_idx
             sample["articulation_id"] = deg_idx
 
+        else:
+            val_idx = random.randint(0, len(self.ids) - 1)
+            instance_dir = self.ids[val_idx]
+            deg_paths = [
+                f.name
+                for f in os.scandir(os.path.join(self.root_dir, instance_dir, "train"))
+            ]
+
+            sorted_indices = np.argsort(
+                [int(filename.split("_")[0]) for filename in deg_paths]
+            )
+            deg_paths = [deg_paths[i] for i in sorted_indices]
+
+            deg_idx = random.randint(0, len(deg_paths) - 1)
+            degree_dir = deg_paths[deg_idx]
+
+            # image_id = np.random.randint(0, 59)
+            image_id = 0
+            cam_rays, cam_view_dirs, cam_rays_d, img, seg = self.read_data(
+                instance_dir, degree_dir, image_id
+            )
+            h, w, _ = img.shape
+            rays, rays_d, view_dirs, src_img, rgbs, mask = self.get_ray_batch(
+                cam_rays, cam_view_dirs, cam_rays_d, img, seg, ray_batch_size=None
+            )
+
+            sample = {}
+            sample["rays_o"] = rays
+            sample["rays_d"] = rays_d
+            sample["viewdirs"] = view_dirs
+            sample["src_imgs"] = src_img
+            sample["target"] = rgbs
+            sample["instance_mask"] = mask
+            sample["deg"] = np.deg2rad(idx_to_deg["train"][deg_idx]).astype(np.float32)
+            sample["img_wh"] = np.array((w, h))
+            sample["instance_id"] = val_idx
+            sample["articulation_id"] = deg_idx
         return sample
