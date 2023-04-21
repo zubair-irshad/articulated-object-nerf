@@ -43,6 +43,7 @@ class CodeLibraryArticulated(nn.Module):
             interpolated_embeddings = self.get_interpolated_articulations(
                 max_interpolations=2, device=device
             )
+            print("interpolated_embeddings", interpolated_embeddings.shape)
             ret_dict["articulation"] = interpolated_embeddings[batch["articulation_id"]]
         else:
             ret_dict["articulation"] = self.embedding_instance_articulation(
