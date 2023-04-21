@@ -42,6 +42,10 @@ Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. C
 
 ``` CUDA_VISIBLE_DEVICES=0 python run.py --dataset_name sapien --root_dir /experiments/zubair/datasets/sapien_single_scene --exp_name sapien_single_scene_vanilla --exp_type vanilla --img_wh 640 480 --white_back --batch_size 1 --num_gpus 1 --run_eval --render_name sapien_test_highres ```
 
+* Single Insatnce Articulation Overfitting
+``` CUDA_VISIBLE_DEVICES=0 python /home/ubuntu/zubair/articulated-object-nerf/run.py --dataset_name sapien_multi --root_dir /experiments/zubair/datasets/sapien_single_scene_art --exp_name sapien_single_scene_articulated --exp_type vanilla_autodecoder --img_wh 320 240 --white_back --batch_size 1 --N_max_objs 1 --run_eval --render_name single_image_train_degs_interpolation2 ```
+
+
 # :key: Generate Sapien Dataset
 * Coming Soon
 

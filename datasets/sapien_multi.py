@@ -355,7 +355,7 @@ class SapienDatasetMulti(Dataset):
             # degree_dir = deg_paths[deg_idx]
 
             # image_id = np.random.randint(0, 59)
-            image_id = 0
+            image_id = idx
             cam_rays, cam_view_dirs, cam_rays_d, img, seg = self.get_test_rays(
                 instance_dir, image_id
             )
