@@ -171,7 +171,7 @@ class SapienDatasetMulti(Dataset):
             pose_path = os.path.join(base_dir, "transforms.json")
             poses = json.load(open(pose_path))
         else:
-            base_dir = os.path.join(base_dir, instance_id, "test", degree_id)
+            base_dir = os.path.join(base_dir, instance_id, "train", degree_id)
             img_files = os.listdir(os.path.join(base_dir, "rgb"))
             sorted_indices = np.argsort(
                 [int(filename.split("_")[1].split(".")[0]) for filename in img_files]
