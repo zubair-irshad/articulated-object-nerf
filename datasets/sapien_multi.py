@@ -218,7 +218,7 @@ class SapienDatasetMulti(Dataset):
         if self.split == "val":
             return 1  # only validate 8 images (to support <=8 gpus)
         else:
-            return 60
+            return 10
         # return len(self.meta['frames'])
 
     def __getitem__(self, idx):
