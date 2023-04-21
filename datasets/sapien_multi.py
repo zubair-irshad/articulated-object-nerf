@@ -340,19 +340,19 @@ class SapienDatasetMulti(Dataset):
         else:
             val_idx = random.randint(0, len(self.ids) - 1)
             instance_dir = self.ids[val_idx]
-            deg_paths = [
-                f.name
-                for f in os.scandir(os.path.join(self.root_dir, instance_dir, "train"))
-            ]
+            # deg_paths = [
+            #     f.name
+            #     for f in os.scandir(os.path.join(self.root_dir, instance_dir, "train"))
+            # ]
 
-            sorted_indices = np.argsort(
-                [int(filename.split("_")[0]) for filename in deg_paths]
-            )
-            deg_paths = [deg_paths[i] for i in sorted_indices]
+            # sorted_indices = np.argsort(
+            #     [int(filename.split("_")[0]) for filename in deg_paths]
+            # )
+            # deg_paths = [deg_paths[i] for i in sorted_indices]
 
             # deg_idx = random.randint(0, len(deg_paths) - 1)
             deg_idx = idx
-            degree_dir = deg_paths[deg_idx]
+            # degree_dir = deg_paths[deg_idx]
 
             # image_id = np.random.randint(0, 59)
             image_id = 0
