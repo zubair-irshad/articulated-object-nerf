@@ -55,7 +55,7 @@ class CodeLibraryArticulated(nn.Module):
     def get_interpolated_articulations(self, max_interpolations=2, device="cuda"):
         N_max_articulations = 10
         interpolated_embeddings = torch.zeros(
-            (N_max_articulations - 1) * max_interpolations, 32
+            (N_max_articulations * max_interpolations) - 1, 32
         ).to(device)
         for i in range(N_max_articulations):
             embedding_articulation = self.embedding_instance_articulation(
