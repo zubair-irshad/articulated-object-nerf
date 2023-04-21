@@ -598,6 +598,7 @@ class LitNeRF_AutoDecoder(LitModel):
         #     if k == "near_obj" or k == "far_obj":
         #         batch[k] = batch[k].unsqueeze(-1)
         latents = self.code_library(batch, is_test=True)
+        print("latent articulation", latents["articulation"].shape)
         return self.render_rays_test(batch, latents)
 
     def configure_optimizers(self):
