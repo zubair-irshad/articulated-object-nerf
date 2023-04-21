@@ -54,10 +54,12 @@ class CodeLibraryArticulated(nn.Module):
         N_max_articulations = 10
         interpolated_embeddings = torch.zeros(
             N_max_articulations * max_interpolations, 32
-        )
+        ).to(self.embedding_instance_articulation.device)
         for i in range(N_max_articulations):
             embedding_articulation = self.embedding_instance_articulation(
-                torch.tensor(i, dtype=torch.long).cuda()
+                torch.tensor(i, dtype=torch.long).to(
+                    self.embedding_instance_articulation.device
+                )
             )
             interpolated_embeddings[i * 2] = embedding_articulation
 
