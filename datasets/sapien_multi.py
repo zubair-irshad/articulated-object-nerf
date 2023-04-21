@@ -62,7 +62,7 @@ def create_spheric_poses(n_poses=60, radius=4):
         )
         c2w = rot_theta(theta) @ rot_phi(phi) @ trans_t(radius)
         c2w = np.array([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) @ c2w
-        return c2w[:3]
+        return c2w
 
     spheric_poses = []
     for th in np.linspace(0, 2 * np.pi, n_poses + 1)[:-1]:
