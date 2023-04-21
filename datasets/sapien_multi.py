@@ -210,6 +210,7 @@ class SapienDatasetMulti(Dataset):
         return rays_o, view_dirs, rays_d, img, seg
 
     def get_test_rays(self, instance_id, image_id):
+        base_dir = self.root_dir
         base_dir = os.path.join(base_dir, instance_id, "train", "0_degree")
         img_files = os.listdir(os.path.join(base_dir, "rgb"))
         sorted_indices = np.argsort(
