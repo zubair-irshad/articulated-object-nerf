@@ -70,8 +70,8 @@ def create_spheric_poses(n_poses=60, radius=4):
             spheric_pose(th, -np.pi / 5, radius)
         ]  # 36 degree view downwards
     poses_spheric = np.stack(spheric_poses, 0)
-    cam_locations_spheric = poses_spheric[:, :3, 3]
-    return cam_locations_spheric
+    # cam_locations_spheric = poses_spheric[:, :3, 3]
+    return poses_spheric
 
 
 class SapienDatasetMulti(Dataset):
