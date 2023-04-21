@@ -33,15 +33,40 @@ class CodeLibraryArticulated(nn.Module):
         init.xavier_uniform_(self.embedding_instance_appearance.weight)
         init.xavier_uniform_(self.embedding_instance_articulation.weight)
 
-    def forward(self, batch):
+    def forward(self, batch, is_test=False):
         ret_dict = dict()
         ret_dict["density"] = self.embedding_instance_shape(batch["instance_id"])
         ret_dict["color"] = self.embedding_instance_appearance(batch["instance_id"])
-        ret_dict["articulation"] = self.embedding_instance_articulation(
-            batch["articulation_id"]
-        )
+
+        if is_test:
+            interpolated_embeddings = self.get_interpolated_articulations(
+                max_interpolations=2
+            )
+            ret_dict["articulation"] = interpolated_embeddings[batch["articulation_id"]]
+        else:
+            ret_dict["articulation"] = self.embedding_instance_articulation(
+                batch["articulation_id"]
+            )
 
         return ret_dict
+
+    def get_interpolated_articulations(self, max_interpolations=2):
+        N_max_articulations = 10
+        interpolated_embeddings = torch.zeros(
+            N_max_articulations * max_interpolations, 32
+        )
+        for i in range(N_max_articulations):
+            embedding_articulation = self.embedding_instance_articulation(
+                torch.tensor(i, dtype=torch.long).cuda()
+            )
+            interpolated_embeddings[i * 2] = embedding_articulation
+
+        for i in range(N_max_articulations - 1):
+            interpolated_embeddings[i * 2 + 1] = (
+                interpolated_embeddings[i * 2] + interpolated_embeddings[i * 2 + 2]
+            ) / 2
+
+        return interpolated_embeddings
 
 
 if __name__ == "__main__":

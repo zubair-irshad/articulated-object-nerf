@@ -585,6 +585,8 @@ class LitNeRF_AutoDecoder(LitModel):
                 continue
             batch[k] = v.squeeze(0)
 
+        articulation_emb = latents["articulation"]
+
         # for k, v in batch.items():
         #     if k == "deg":
         #         continue
