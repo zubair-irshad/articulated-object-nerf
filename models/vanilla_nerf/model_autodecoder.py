@@ -511,7 +511,7 @@ class LitNeRF_AutoDecoder(LitModel):
         self.log("val/psnr_obj", psnr_obj.item(), on_epoch=True, sync_dist=True)
         return ret
 
-    def render_rays_test(self, batch, batch_idx):
+    def render_rays_test(self, batch, latents):
         B = batch["rays_o"].shape[0]
         ret = defaultdict(list)
         for i in range(0, B, self.hparams.chunk):
@@ -522,7 +522,7 @@ class LitNeRF_AutoDecoder(LitModel):
                 else:
                     batch_chunk[k] = v[i : i + self.hparams.chunk]
             rendered_results_chunk = self.model(
-                batch_chunk, False, self.white_bkgd, self.near, self.far
+                batch_chunk, False, self.white_bkgd, self.near, self.far, latents
             )
             # here 1 denotes fine
             ret["comp_rgb"] += [rendered_results_chunk[1][0]]
@@ -581,14 +581,20 @@ class LitNeRF_AutoDecoder(LitModel):
 
     def test_step(self, batch, batch_idx):
         for k, v in batch.items():
-            if k == "deg":
+            if k == "deg" or k == "instance_id" or k == "articulation_id":
                 continue
-            batch[k] = v.squeeze()
-            if k == "radii":
-                batch[k] = v.unsqueeze(-1)
-            if k == "near_obj" or k == "far_obj":
-                batch[k] = batch[k].unsqueeze(-1)
-        return self.render_rays_test(batch, batch_idx)
+            batch[k] = v.squeeze(0)
+
+        # for k, v in batch.items():
+        #     if k == "deg":
+        #         continue
+        #     batch[k] = v.squeeze()
+        #     if k == "radii":
+        #         batch[k] = v.unsqueeze(-1)
+        #     if k == "near_obj" or k == "far_obj":
+        #         batch[k] = batch[k].unsqueeze(-1)
+        latents = self.code_library(batch)
+        return self.render_rays_test(batch, latents)
 
     def configure_optimizers(self):
         params = list(self.model.parameters()) + list(self.code_library.parameters())
