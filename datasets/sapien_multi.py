@@ -374,7 +374,7 @@ class SapienDatasetMulti(Dataset):
             sample["src_imgs"] = src_img
             sample["target"] = rgbs
             sample["instance_mask"] = mask
-            sample["deg"] = np.deg2rad(idx_to_deg["train"][deg_idx]).astype(np.float32)
+            # sample["deg"] = np.deg2rad(idx_to_deg["train"][deg_idx]).astype(np.float32)
             sample["img_wh"] = np.array((w, h))
             sample["instance_id"] = val_idx
             sample["articulation_id"] = deg_idx
