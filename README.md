@@ -1,5 +1,14 @@
 # Articulated Object Neural Radiance Field
 
+
+# Preliminary Qualitative Results:
+
+<div style="display:flex;">
+  <img src="demo/gif1.gif" width="33.33%">
+  <img src="demo/gif2.gif" width="33.33%">
+  <img src="demo/gif3.gif" width="33.33%">
+</div>
+
 # :computer: Overview
 Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. Currently Supported Experiments:
 
