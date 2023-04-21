@@ -39,8 +39,9 @@ class CodeLibraryArticulated(nn.Module):
         ret_dict["color"] = self.embedding_instance_appearance(batch["instance_id"])
 
         if is_test:
+            device = batch["articulation_id"].device
             interpolated_embeddings = self.get_interpolated_articulations(
-                max_interpolations=2
+                max_interpolations=2, device=device
             )
             ret_dict["articulation"] = interpolated_embeddings[batch["articulation_id"]]
         else:
@@ -50,16 +51,14 @@ class CodeLibraryArticulated(nn.Module):
 
         return ret_dict
 
-    def get_interpolated_articulations(self, max_interpolations=2):
+    def get_interpolated_articulations(self, max_interpolations=2, device="cuda"):
         N_max_articulations = 10
         interpolated_embeddings = torch.zeros(
             N_max_articulations * max_interpolations, 32
-        ).to(self.embedding_instance_articulation.device)
+        ).to(device)
         for i in range(N_max_articulations):
             embedding_articulation = self.embedding_instance_articulation(
-                torch.tensor(i, dtype=torch.long).to(
-                    self.embedding_instance_articulation.device
-                )
+                torch.tensor(i, dtype=torch.long).to(device)
             )
             interpolated_embeddings[i * 2] = embedding_articulation
 
