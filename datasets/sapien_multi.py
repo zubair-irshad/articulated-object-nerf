@@ -52,7 +52,7 @@ class SapienDatasetMulti(Dataset):
         if eval_inference is not None:
             # eval_num = int(self.eval_inference[0])
             # num =  100 - eval_num
-            num = 20
+            num = 18
             self.image_sizes = np.array([[h, w] for i in range(num)])
         else:
             self.image_sizes = np.array([[h, w] for i in range(1)])
@@ -218,7 +218,7 @@ class SapienDatasetMulti(Dataset):
         if self.split == "val":
             return 1  # only validate 8 images (to support <=8 gpus)
         else:
-            return 20
+            return 18
         # return len(self.meta['frames'])
 
     def __getitem__(self, idx):
