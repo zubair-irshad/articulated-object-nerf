@@ -581,7 +581,7 @@ class LitNeRF_AutoDecoder(LitModel):
 
         return ret
 
-    def test_step(self, batch):
+    def test_step(self, batch, batch_idx):
         for k, v in batch.items():
             if k == "deg" or k == "instance_id" or k == "articulation_id":
                 continue
