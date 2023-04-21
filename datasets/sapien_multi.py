@@ -26,52 +26,98 @@ def get_bbox_from_mask(inst_mask):
     return x1, x2, y1, y2
 
 
-def create_spheric_poses(n_poses=60, radius=4):
-    """
-    Create circular poses around z axis.
-    Inputs:
-        radius: the (negative) height and the radius of the circle.
-    Outputs:
-        spheric_poses: (n_poses, 3, 4) the poses in the circular path
-    """
+def create_spheric_poses(radius=4.0):
+    trans_t = lambda t: torch.Tensor(
+        [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, t], [0, 0, 0, 1]]
+    ).float()
 
-    def spheric_pose(theta, phi, radius):
-        trans_t = lambda t: np.array(
-            [
-                [1, 0, 0, 0],
-                [0, 1, 0, -0.3 * t],
-                [0, 0, 1, t],
-                [0, 0, 0, 1],
-            ]
+    rot_phi = lambda phi: torch.Tensor(
+        [
+            [1, 0, 0, 0],
+            [0, np.cos(phi), -np.sin(phi), 0],
+            [0, np.sin(phi), np.cos(phi), 0],
+            [0, 0, 0, 1],
+        ]
+    ).float()
+
+    rot_theta = lambda th: torch.Tensor(
+        [
+            [np.cos(th), 0, -np.sin(th), 0],
+            [0, 1, 0, 0],
+            [np.sin(th), 0, np.cos(th), 0],
+            [0, 0, 0, 1],
+        ]
+    ).float()
+
+    def pose_spherical(theta, phi, radius):
+        c2w = trans_t(radius)
+        c2w = rot_phi(phi / 180.0 * np.pi) @ c2w
+        c2w = rot_theta(theta / 180.0 * np.pi) @ c2w
+        c2w = (
+            torch.Tensor(
+                np.array([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
+            )
+            @ c2w
         )
-        rot_phi = lambda phi: np.array(
-            [
-                [1, 0, 0, 0],
-                [0, np.cos(phi), -np.sin(phi), 0],
-                [0, np.sin(phi), np.cos(phi), 0],
-                [0, 0, 0, 1],
-            ]
-        )
-        rot_theta = lambda th: np.array(
-            [
-                [np.cos(th), 0, -np.sin(th), 0],
-                [0, 1, 0, 0],
-                [np.sin(th), 0, np.cos(th), 0],
-                [0, 0, 0, 1],
-            ]
-        )
-        c2w = rot_theta(theta) @ rot_phi(phi) @ trans_t(radius)
-        c2w = np.array([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) @ c2w
         return c2w
 
-    spheric_poses = []
-    for th in np.linspace(0, 2 * np.pi, n_poses + 1)[:-1]:
-        spheric_poses += [
-            spheric_pose(th, -np.pi / 5, radius)
-        ]  # 36 degree view downwards
-    poses_spheric = np.stack(spheric_poses, 0)
-    # cam_locations_spheric = poses_spheric[:, :3, 3]
-    return poses_spheric
+    render_poses = torch.stack(
+        [
+            pose_spherical(angle, -30.0, radius)
+            for angle in np.linspace(-180, 180, 40 + 1)[:-1]
+        ],
+        0,
+    )
+
+    return render_poses
+
+
+# def create_spheric_poses(n_poses=60, radius=4):
+#     """
+#     Create circular poses around z axis.
+#     Inputs:
+#         radius: the (negative) height and the radius of the circle.
+#     Outputs:
+#         spheric_poses: (n_poses, 3, 4) the poses in the circular path
+#     """
+
+#     def spheric_pose(theta, phi, radius):
+#         trans_t = lambda t: np.array(
+#             [
+#                 [1, 0, 0, 0],
+#                 [0, 1, 0, -0.3 * t],
+#                 [0, 0, 1, t],
+#                 [0, 0, 0, 1],
+#             ]
+#         )
+#         rot_phi = lambda phi: np.array(
+#             [
+#                 [1, 0, 0, 0],
+#                 [0, np.cos(phi), -np.sin(phi), 0],
+#                 [0, np.sin(phi), np.cos(phi), 0],
+#                 [0, 0, 0, 1],
+#             ]
+#         )
+#         rot_theta = lambda th: np.array(
+#             [
+#                 [np.cos(th), 0, -np.sin(th), 0],
+#                 [0, 1, 0, 0],
+#                 [np.sin(th), 0, np.cos(th), 0],
+#                 [0, 0, 0, 1],
+#             ]
+#         )
+#         c2w = rot_theta(theta) @ rot_phi(phi) @ trans_t(radius)
+#         c2w = np.array([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) @ c2w
+#         return c2w
+
+#     spheric_poses = []
+#     for th in np.linspace(0, 2 * np.pi, n_poses + 1)[:-1]:
+#         spheric_poses += [
+#             spheric_pose(th, -np.pi / 5, radius)
+#         ]  # 36 degree view downwards
+#     poses_spheric = np.stack(spheric_poses, 0)
+#     # cam_locations_spheric = poses_spheric[:, :3, 3]
+#     return poses_spheric
 
 
 class SapienDatasetMulti(Dataset):
@@ -103,7 +149,7 @@ class SapienDatasetMulti(Dataset):
             num = 19
             self.image_sizes = np.array([[h, w] for i in range(num)])
 
-            self.poses_test = create_spheric_poses(n_poses=60, radius=4)
+            self.poses_test = create_spheric_poses(radius=4)
         else:
             self.image_sizes = np.array([[h, w] for i in range(1)])
 
