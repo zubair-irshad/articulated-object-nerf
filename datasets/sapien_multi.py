@@ -310,7 +310,8 @@ class SapienDatasetMulti(Dataset):
             )
             deg_paths = [deg_paths[i] for i in sorted_indices]
 
-            deg_idx = random.randint(0, len(deg_paths) - 1)
+            # deg_idx = random.randint(0, len(deg_paths) - 1)
+            deg_idx = idx
             degree_dir = deg_paths[deg_idx]
 
             # image_id = np.random.randint(0, 59)
