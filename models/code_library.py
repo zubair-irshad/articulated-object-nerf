@@ -68,11 +68,6 @@ class CodeLibraryArticulated(nn.Module):
             next_embedding = interpolated_embeddings[(i * 2)]
             interpolated_embeddings[(i * 2) - 1] = (prev_embedding + next_embedding) / 2
 
-        # for i in range(N_max_articulations):
-        #     interpolated_embeddings[(i-1) * 2] = (
-        #         interpolated_embeddings[i * 2] + interpolated_embeddings[i * 2 + 2]
-        #     ) / 2
-
         return interpolated_embeddings
 
 

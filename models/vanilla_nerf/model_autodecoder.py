@@ -532,6 +532,8 @@ class LitNeRF_AutoDecoder(LitModel):
 
         for k, v in ret.items():
             ret[k] = torch.cat(v, 0)
+
+        print("ret[comp_rgb].shape", ret["comp_rgb"].shape)
         test_output = {}
         test_output["target"] = batch["target"]
         test_output["instance_mask"] = batch["instance_mask"]
@@ -579,7 +581,7 @@ class LitNeRF_AutoDecoder(LitModel):
 
         return ret
 
-    def test_step(self, batch, batch_idx):
+    def test_step(self, batch):
         for k, v in batch.items():
             if k == "deg" or k == "instance_id" or k == "articulation_id":
                 continue
