@@ -209,6 +209,45 @@ class SapienDatasetMulti(Dataset):
 
         return rays_o, view_dirs, rays_d, img, seg
 
+    def get_test_rays(self, instance_id, image_id):
+        base_dir = os.path.join(base_dir, instance_id, "train", "0_degree")
+        img_files = os.listdir(os.path.join(base_dir, "rgb"))
+        sorted_indices = np.argsort(
+            [int(filename.split("_")[1].split(".")[0]) for filename in img_files]
+        )
+        img_files = [img_files[i] for i in sorted_indices]
+        pose_path_val = os.path.join(base_dir, "transforms.json")
+        poses = json.load(open(pose_path_val))
+
+        w, h = self.img_wh
+
+        focal = 0.5 * h / np.tan(0.5 * poses["camera_angle_x"])
+        # 320 is the original rendered image width
+        focal *= self.img_wh[0] / 320  # modify focal length to match size self.img_wh
+        # pose_scale_factor =  0.2512323810155881
+        # obtained after pose_scale_factor = 1. / np.max(np.abs(all_c2w_train[:, :3, 3]))
+
+        # ray directions for all pixels, same for all images (same H, W, focal)
+        directions = get_ray_directions(h, w, focal)  # (h, w, 3)
+
+        img_file = img_files[image_id]
+        c2w = np.array(poses["frames"][img_file.split(".")[0]])
+        c2w = torch.FloatTensor(c2w)[:3, :4]
+
+        img, seg = self.load_image_and_seg(
+            img_path=os.path.join(base_dir, "rgb", img_file),
+            seg_path=os.path.join(base_dir, "seg", img_file),
+        )
+        # img, seg, box_2d = self.get_cropped_img_seg(img, seg)
+        img, seg = self.get_masked_img_seg(img, seg)
+
+        rays_o, view_dirs, rays_d, _ = get_rays(
+            directions, c2w, output_view_dirs=True, output_radii=True
+        )
+        # rays_o, view_dirs, rays_d = self.get_cropped_rays(rays_o, view_dirs, rays_d, box_2d)
+
+        return rays_o, view_dirs, rays_d, img, seg
+
     def define_transforms(self):
         self.transform = T.ToTensor()
 
@@ -316,9 +355,12 @@ class SapienDatasetMulti(Dataset):
 
             # image_id = np.random.randint(0, 59)
             image_id = 0
-            cam_rays, cam_view_dirs, cam_rays_d, img, seg = self.read_data(
-                instance_dir, degree_dir, image_id
+            cam_rays, cam_view_dirs, cam_rays_d, img, seg = self.get_test_rays(
+                instance_dir, image_id
             )
+            # cam_rays, cam_view_dirs, cam_rays_d, img, seg = self.read_data(
+            #     instance_dir, degree_dir, image_id
+            # )
             h, w, _ = img.shape
             rays, rays_d, view_dirs, src_img, rgbs, mask = self.get_ray_batch(
                 cam_rays, cam_view_dirs, cam_rays_d, img, seg, ray_batch_size=None
