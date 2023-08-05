@@ -21,7 +21,7 @@ If you find this repository useful, please consider [citing](https://github.com/
  - [📝 Citation](#-citation)
 
 ## :four_leaf_clover: Overview
-Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. Currently Supported Experiments:
+Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. Currently supported Experiments:
 
 - Sapien Dataset (Single Instance Overfitting)
 
@@ -29,7 +29,10 @@ Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. C
 
 - Sapien Dataset (Single Instance Auto-Encoder Articulated NeRF)
 
-- Future: Sapien Dataset (Single Instance Auto-Decoder Articulated NeRF)
+Future (In Pipeline): 
+
+- Sapien Dataset (Single Instance Auto-Decoder Articulated NeRF)
+- Sapien Dataset (Generalization experiments i.e. few-shot Articulated NeRF)
 
 
 ## 💻 Installation
@@ -42,7 +45,7 @@ Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. C
 2. Software
 
 * Clone this repo by `git clone --recursive https://github.com/zubair-irshad/articulated-object-nerf`
-* Python>=3.7 (installation via [anaconda](https://www.anaconda.com/distribution/) is recommended, use `conda create -n ao-nerf python=3.7` to create a conda environment and activate it by `conda activate nerf_pl`)
+* Python>=3.7 (installation via [anaconda](https://www.anaconda.com/distribution/) is recommended, use `conda create -n ao-nerf python=3.7` to create a conda environment and activate it by `conda activate aon`)
 * Python libraries
     * Install core requirements by `pip install -r requirements.txt`
  
@@ -50,7 +53,7 @@ Experimental Repo for Modelling Neural Radiance Field for Articulated Objects. C
 1. Download pre-generated SAPIEN Dataset: [Download link1 ](https://www.dropbox.com/scl/fi/t9wsvgnmvjjzpc555nan5/sapien_single_scene.tar.xz?rlkey=mhj1e6jc3ywbvdyl3mwtr70yw&dl=1) [Download link2](https://www.dropbox.com/scl/fi/q88wzo9gk3c1kab7suckx/sapien_single_scene_art.tar.xz?rlkey=ckmpsp8csqm7nz40rfv86w2tv&dl=1)
 
 2. Generate Sapien Dataset
-* Coming Soon
+    * Coming Soon
 
 ## ✨ Training and Inference
 1.  Training
@@ -82,7 +85,7 @@ CUDA_VISIBLE_DEVICES=0 python /home/ubuntu/zubair/articulated-object-nerf/run.py
 ## 📝 Citation
 If you find this repository useful, please consider citing this implementation as well as the two original papers:
 ```
-@misc{irshad2022implicitnerfroboticsresources,
+@misc{irshad2023articulatednerf,
     title = {Articulated Object NeRF - A simple and intuitive implementation of creating articulated object neural radiance fields},
     author = {Muhammad Zubair Irshad},
     journal = {GitHub repository},
