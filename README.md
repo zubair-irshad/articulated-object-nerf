@@ -1,5 +1,5 @@
 # Articulated Object Neural Radiance Field
-This repository is the experimental implementation of articulated object NeRF training and rendering from some of the ideas mentioned in a few papers including [CLA-NeRF](https://arxiv.org/abs/2202.00181) and [NASAM](https://arxiv.org/abs/2202.00181). 
+This repository is the experimental implementation of articulated object NeRF training and rendering from some of the ideas mentioned in a few papers including [CLA-NeRF](https://arxiv.org/abs/2202.00181) and [NASAM](https://arxiv.org/abs/2205.08525). 
 
 **Goal of this repo**: To implement a simple and intuitive pipeline for training and rendering [Neural Radiance Fields](https://arxiv.org/abs/2003.08934) for articulated objects given 1. Multi-view consistent as well as articulation-aware input images of specific objects (**Overfitting**) and 2. (In pipeline) Multi-view consistent and articulation-aware input images of diverse instances of objects within a category to predict NeRFs for new instances using few images (**Generalization**) 
 
