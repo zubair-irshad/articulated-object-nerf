@@ -26,10 +26,6 @@ def cast_rays(t_vals, origins, directions):
     return origins[..., None, :] + t_vals[..., None] * directions[..., None, :]
 
 
-import vren
-from torch.cuda.amp import custom_fwd, custom_bwd
-
-
 def get_ray_limits(rays_o: torch.Tensor, rays_d: torch.Tensor, box_side_length=2):
     batch_near, batch_far = get_ray_limits_box(
         rays_o, rays_d, box_side_length=box_side_length
@@ -105,28 +101,6 @@ def get_ray_limits_box(rays_o: torch.Tensor, rays_d: torch.Tensor, box_side_leng
     tmax[torch.logical_not(is_valid)] = -2
     return tmin.reshape(*o_shape[:-1], 1), tmax.reshape(*o_shape[:-1], 1)
 
-
-class RayAABBIntersector(torch.autograd.Function):
-    """
-    Computes the intersections of rays and axis-aligned voxels.
-    Inputs:
-        rays_o: (N_rays, 3) ray origins
-        rays_d: (N_rays, 3) ray directions
-        centers: (N_voxels, 3) voxel centers
-        half_sizes: (N_voxels, 3) voxel half sizes
-        max_hits: maximum number of intersected voxels to keep for one ray
-                  (for a cubic scene, this is at most 3*N_voxels^(1/3)-2)
-    Outputs:
-        hits_cnt: (N_rays) number of hits for each ray
-        (followings are from near to far)
-        hits_t: (N_rays, max_hits, 2) hit t's (-1 if no hit)
-        hits_voxel_idx: (N_rays, max_hits) hit voxel indices (-1 if no hit)
-    """
-
-    @staticmethod
-    @custom_fwd(cast_inputs=torch.float32)
-    def forward(ctx, rays_o, rays_d, center, half_size, max_hits):
-        return vren.ray_aabb_intersect(rays_o, rays_d, center, half_size, max_hits)
 
 
 def sample_along_rays(
