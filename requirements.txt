@@ -23,3 +23,4 @@ numba
 pytransform3d
 omegaconf
 piqa
+wandb

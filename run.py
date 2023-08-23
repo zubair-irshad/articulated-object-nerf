@@ -8,7 +8,6 @@ from pytorch_lightning.plugins import DDPPlugin
 from pytorch_lightning.loggers import WandbLogger
 import pytorch_lightning as pl
 
-wandb.login(key="996ee27de02ee214ded37d491317d5a0567f6dc8")
 wandb_logger = WandbLogger()
 import numpy as np
 
