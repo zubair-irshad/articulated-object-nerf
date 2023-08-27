@@ -24,3 +24,5 @@ pytransform3d
 omegaconf
 piqa
 wandb
+sapien
+transforms3d
