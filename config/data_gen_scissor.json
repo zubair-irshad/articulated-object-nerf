@@ -1,0 +1,4 @@
+{
+    "urdf_file": "./data_base/scissor/10567/mobility.urdf",
+    "output_dir": "./data/scissor"
+}
