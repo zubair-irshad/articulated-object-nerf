@@ -1,0 +1,11 @@
+{
+    "dataset_name": "sapien",
+    "root_dir": "data/scissor",
+    "exp_name": "nerf_scissor",
+    "exp_type": "vanilla",
+    "img_wh": [640, 480],
+    "white_back": true,
+    "batch_size": 1,
+    "num_gpus": 4,
+    "num_epochs": 10
+}

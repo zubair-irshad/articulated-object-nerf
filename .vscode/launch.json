@@ -8,10 +8,10 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "datagen/data_gen.py",
+            "program": "run.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--config", "config/data_gen_scissor.json"]
+            "args": ["--config", "config/nerf_training.json"]
         }
     ]
 }

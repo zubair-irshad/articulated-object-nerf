@@ -1,8 +1,9 @@
 import argparse
+import json
 
 def get_opts():
     parser = argparse.ArgumentParser()
-
+    parser.add_argument('--config', type=str, required=True, help="config file for runing")
     parser.add_argument('--root_dir', type=str,
                         default='/home/ubuntu/data/nerf_example_data/nerf_synthetic/lego',
                         help='root directory of dataset')
@@ -205,4 +206,18 @@ def get_opts():
     # parser.add_argument('--ckpt_path', type=str, default='last.ckpt',
     #                     help='ckpt path')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    # Load and parse the JSON configuration file
+    with open(args.config, "r") as config_file:
+        config_data = json.load(config_file)
+        
+    # required_args = ["urdf_file", "output_dir"]
+    # missing_args = [arg for arg in required_args if arg not in config_data]
+    # if missing_args:
+    #     raise ValueError(f"Required argument(s) {', '.join(missing_args)} not found in the JSON configuration")
+
+    # Update the args namespace with loaded JSON data
+    for key, value in config_data.items():
+        setattr(args, key, value)
+        
+    return args

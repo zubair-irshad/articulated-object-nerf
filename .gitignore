@@ -2,3 +2,4 @@ hub/checkpoints/*
 data
 data_base
 __pycache__
+wandb
