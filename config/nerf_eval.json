@@ -6,7 +6,8 @@
     "img_wh": [640, 480],
     "white_back": true,
     "batch_size": 1,
-    "num_gpus": 4,
+    "num_gpus": 1,
     "num_epochs": 10,
-    "output_path": "./results"
+    "run_eval": true,
+    "render_name": "scissor_NeRF"
 }

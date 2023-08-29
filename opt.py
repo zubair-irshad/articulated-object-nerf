@@ -10,6 +10,7 @@ def get_opts():
     parser.add_argument('--dataset_name', type=str, default='blender',
                         choices=['blender', 'llff', 'llff_nocs', 'google_scanned', 'objectron', 'srn', 'srn_multi', 'objectron_multi', 'nocs_bckg', 'llff_nsff', 'co3d', 'pd', 'pd_multi_obj', 'pd_multi', 'pd_multi_ae', 'srn_multi_ae', 'pd_multi_obj_ae', 'pd_multi_obj_ae_nocs', 'pd_multi_obj_ae_cv', 'sapien', 'sapien_multi'],
                         help='which dataset to train/val')
+    parser.add_argument('--output_path', type=str, default='./results', help='dir to save the training results.')
     parser.add_argument('--save_path', type=str,
                         default='vanilla',
                         help='save results during eval')

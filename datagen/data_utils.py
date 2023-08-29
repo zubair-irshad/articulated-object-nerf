@@ -102,8 +102,7 @@ def get_joint_type(asset):
             j_type += [joint.type[0]] * joint.get_dof()
     return j_type
 
-
-def render_pose(point, save_path, camera_mount_actor, scene, camera, asset, q_pos=None, pose_fn=None, save=True):
+def calculate_cam_ext(point):
     cam_pos = np.array(point)
     # def update_cam_pose(cam_pos):
     forward = -cam_pos / np.linalg.norm(cam_pos)
@@ -113,6 +112,10 @@ def render_pose(point, save_path, camera_mount_actor, scene, camera, asset, q_po
     mat44 = np.eye(4)
     mat44[:3, :3] = np.stack([forward, left, up], axis=1)
     mat44[:3, 3] = cam_pos
+    return mat44
+
+def render_pose(point, save_path, camera_mount_actor, scene, camera, asset, q_pos=None, pose_fn=None, save=True):
+    mat44 = calculate_cam_ext(point)
     if camera_mount_actor is None:
         camera.set_pose(sapien.Pose.from_transformation_matrix(mat44))
     else:
@@ -158,10 +161,6 @@ def render_pose(point, save_path, camera_mount_actor, scene, camera, asset, q_po
         "qpos": qpos.tolist(),
         "joint_type": get_joint_type(asset),
         "cam_param": camera.get_intrinsic_matrix().tolist()}
-    # np.savetxt(str(save_path/'ext.csv'), camera_pose.to_transformation_matrix(), delimiter=',')
-    # np.savetxt(str(save_path/'qpos.csv'), qpos, delimiter=',')
-    # import json
-    
         
     depth_pil = get_depth(camera)
     min_d, max_d = min_max_depth(np.array(depth_pil))
@@ -182,7 +181,8 @@ def render_pose(point, save_path, camera_mount_actor, scene, camera, asset, q_po
         'label_actor': label2_pil,
         'meta': meta_dict,
         'min_d': min_d,
-        'max_d': max_d
+        'max_d': max_d,
+        'mat44': mat44
     }
     return ret_dict
 
