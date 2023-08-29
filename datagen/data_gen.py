@@ -10,8 +10,11 @@ def parse_args():
     parser.add_argument("--urdf_file", type=str, help="file path to the urdf file of sapien")
     parser.add_argument("--output_dir", type=str, help="path to save the generated images")
     parser.add_argument("--resolution", type=int, default=[512, 512], nargs='+', help="Image resolution, w h, default: w = 512, h = 512")
+    parser.add_argument("--save_render_pose_path", type=str, default=None, help="path to save pose for rendering, default is None")
     
+    parser.add_argument("--render_pose_file", type=str, default=None, help="load saved render pose for image generation, defalut is None")
     args = parser.parse_args()
+    parser.add_argument("--qpos", type=float, nargs='+', default=None, help="set object articulation status, list of floats")
 
     # Load and parse the JSON configuration file
     with open(args.config, "r") as config_file:
@@ -69,11 +72,11 @@ def main(args):
 
     splits = ('train', 'test', 'val')
     print("generating images for training...")
-    gen_articulated_object_nerf_s1(100, 4, 'train', camera, asset, scene, object_path=output_path)
+    gen_articulated_object_nerf_s1(100, 4, 'train', camera, asset, scene, object_path=output_path, render_pose_file_dir=args.save_render_pose_path)
     print("generating images for validation...")
-    gen_articulated_object_nerf_s1(50, 4, 'test', camera, asset, scene, object_path=output_path)
+    gen_articulated_object_nerf_s1(50, 4, 'test', camera, asset, scene, object_path=output_path, render_pose_file_dir=args.save_render_pose_path)
     print("generating images for testing...")
-    gen_articulated_object_nerf_s1(50, 4, 'val', camera, asset, scene, object_path=output_path)
+    gen_articulated_object_nerf_s1(50, 4, 'val', camera, asset, scene, object_path=output_path, render_pose_file_dir=args.save_render_pose_path)
 
 if __name__ == "__main__":
     args = parse_args()
