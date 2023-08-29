@@ -241,7 +241,7 @@ def gen_articulated_object_nerf_s1(num_pos_img, radius_, split, camera, asset, s
         json.dump(transform_json, f)
     pass
 
-def generate_img_with_pose(pose_fname, split, camera, asset, scene, object_path, camera_mount_actor=None):
+def generate_img_with_pose(pose_dir, split, camera, asset, scene, object_path, camera_mount_actor=None):
     save_base_path = object_path / split
     save_base_path.mkdir(exist_ok=True)
     save_rgb_path = save_base_path / 'rgb'
@@ -257,8 +257,13 @@ def generate_img_with_pose(pose_fname, split, camera, asset, scene, object_path,
     max_d = 0
     min_d = np.inf
     # load camera pose
-    render_pose = json.load(open(pose_fname))
-    for img_pose, frame_id in enumerate(render_pose):
+    pose_fname = P(pose_dir) / (split + '.json')
+    
+    print('generating images from saved pose file: ', pose_fname)
+    render_pose = json.load(open(str(pose_fname)))
+    for frame_id in tqdm(render_pose.keys()):
+        img_pose = np.array(render_pose[frame_id])
+        
         ret_dict = render_img_with_pose(img_pose, None, camera_mount_actor, scene, camera, asset, save=False)
         rgb_fname = save_rgb_path / (frame_id + '.png')
         rgba_pil = ret_dict['rgba']
