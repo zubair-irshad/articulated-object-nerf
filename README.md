@@ -60,14 +60,22 @@ Future (In Pipeline):
         4. Data will be saved in ```output_dir/{train, val, test}```
         
     **scissor is the output_dir, and the folder tree looks like this**
-    ![Image](./pics/data_folder_tree.png)
-
+   
+    ```
+    scissor
+    ├── test
+    ├── train
+    │   ├── depth
+    │   ├── rgb
+    │   └── transforms.json
+    └── val
+    ```
     **The generated images looks like this**
     ![Image](./pics/generated_data.png)
 
 
     * Data generation for Articulation training
-        * Not available yet
+        * Coming soon!
 
 ## ✨ Training and Inference
 
