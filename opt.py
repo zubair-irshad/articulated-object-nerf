@@ -1,14 +1,16 @@
 import argparse
+import json
 
 def get_opts():
     parser = argparse.ArgumentParser()
-
+    parser.add_argument('--config', type=str, required=True, help="config file for runing")
     parser.add_argument('--root_dir', type=str,
                         default='/home/ubuntu/data/nerf_example_data/nerf_synthetic/lego',
                         help='root directory of dataset')
     parser.add_argument('--dataset_name', type=str, default='blender',
                         choices=['blender', 'llff', 'llff_nocs', 'google_scanned', 'objectron', 'srn', 'srn_multi', 'objectron_multi', 'nocs_bckg', 'llff_nsff', 'co3d', 'pd', 'pd_multi_obj', 'pd_multi', 'pd_multi_ae', 'srn_multi_ae', 'pd_multi_obj_ae', 'pd_multi_obj_ae_nocs', 'pd_multi_obj_ae_cv', 'sapien', 'sapien_multi'],
                         help='which dataset to train/val')
+    parser.add_argument('--output_path', type=str, default='./results', help='dir to save the training results.')
     parser.add_argument('--save_path', type=str,
                         default='vanilla',
                         help='save results during eval')
@@ -205,4 +207,18 @@ def get_opts():
     # parser.add_argument('--ckpt_path', type=str, default='last.ckpt',
     #                     help='ckpt path')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    # Load and parse the JSON configuration file
+    with open(args.config, "r") as config_file:
+        config_data = json.load(config_file)
+        
+    # required_args = ["urdf_file", "output_dir"]
+    # missing_args = [arg for arg in required_args if arg not in config_data]
+    # if missing_args:
+    #     raise ValueError(f"Required argument(s) {', '.join(missing_args)} not found in the JSON configuration")
+
+    # Update the args namespace with loaded JSON data
+    for key, value in config_data.items():
+        setattr(args, key, value)
+        
+    return args

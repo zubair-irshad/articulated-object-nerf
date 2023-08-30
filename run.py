@@ -1,5 +1,6 @@
 from opt import get_opts
 import wandb
+from pathlib import Path as P
 
 # pytorch-lightning
 from pytorch_lightning import Trainer
@@ -31,11 +32,12 @@ def main(hparams):
         system = LitNeRF_AutoDecoder(
             hparams=hparams
         )  # Needs to modify this to train for 3 test images
-
+    result_path = P(hparams.output_path) / hparams.exp_name
+    result_path.mkdir(parents=True, exist_ok=True)
     if hparams.is_optimize is not None:
         num = int(hparams.is_optimize[0])
         ckpt_cb = ModelCheckpoint(
-            dirpath=f"/experiments/zubair/ckpts/{hparams.exp_name}",
+            dirpath=str(result_path),
             monitor="val/psnr",
             filename=f"optimize_{num}_{{epoch:d}}",
             save_top_k=-1,
@@ -47,7 +49,7 @@ def main(hparams):
 
     elif hparams.finetune_lpips:
         ckpt_cb = ModelCheckpoint(
-            dirpath=f"/experiments/zubair/ckpts/{hparams.exp_name}",
+            dirpath=str(result_path),
             monitor="val/psnr",
             filename="finetune_lpips_{epoch:d}",
             save_top_k=5,
@@ -58,7 +60,7 @@ def main(hparams):
         )
     else:
         ckpt_cb = ModelCheckpoint(
-            dirpath=f"/experiments/zubair/ckpts/{hparams.exp_name}",
+            dirpath=str(result_path),
             monitor="val/psnr",
             filename="{epoch:d}",
             save_top_k=5,
@@ -75,10 +77,10 @@ def main(hparams):
     if hparams.finetune_lpips or hparams.is_optimize:
         if hparams.ckpt_path is not None:
             ckpt_path = (
-                f"/experiments/zubair/ckpts/{hparams.exp_name}/{hparams.ckpt_path}"
+                f"./results/ckpts/{hparams.exp_name}/{hparams.ckpt_path}"
             )
         else:
-            ckpt_path = f"/experiments/zubair/ckpts/{hparams.exp_name}/last.ckpt"
+            ckpt_path = str(result_path/'last.ckpt')
     else:
         ckpt_path = None
     if hparams.is_optimize:
@@ -154,10 +156,10 @@ def main(hparams):
     if hparams.run_eval:
         if hparams.ckpt_path is not None:
             ckpt_path = (
-                f"/experiments/zubair/ckpts/{hparams.exp_name}/{hparams.ckpt_path}"
+                f"./results/{hparams.exp_name}/{hparams.ckpt_path}"
             )
         else:
-            ckpt_path = f"/experiments/zubair/ckpts/{hparams.exp_name}/last.ckpt"
+            ckpt_path = f"./results/{hparams.exp_name}/last.ckpt"
         trainer.test(system, ckpt_path=ckpt_path)
         # self.val_dataset = dataset(split='val', **kwargs_test)
     else:

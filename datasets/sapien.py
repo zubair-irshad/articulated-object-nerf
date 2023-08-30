@@ -20,9 +20,7 @@ class SapienDataset(Dataset):
 
         w,h = self.img_wh
         if eval_inference is not None:
-            # eval_num = int(self.eval_inference[0])
-            # num =  100 - eval_num
-            num = 60
+            num = len(self.img_files_val)
             self.image_sizes = np.array([[h, w] for i in range(num)])
         else:
             self.image_sizes = np.array([[h, w] for i in range(1)])
@@ -35,21 +33,24 @@ class SapienDataset(Dataset):
         degree_id = '80_degree'
         
         if self.split == 'train':
-            base_dir_train = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'train')
+            # base_dir_train = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'train')
+            base_dir_train = os.path.join(base_dir, 'train')
             img_files_train = os.listdir(os.path.join(base_dir_train, 'rgb'))
             pose_path_train = os.path.join(base_dir_train, 'transforms.json')
             self.meta = json.load(open(pose_path_train))
         
         elif self.split =='val':
 
-            self.base_dir_val = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'val')
+            # self.base_dir_val = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'val')
+            self.base_dir_val = os.path.join(base_dir, 'val')
             self.img_files_val = os.listdir(os.path.join(self.base_dir_val, 'rgb'))
             sorted_indices = np.argsort([int(filename.split('_')[1].split('.')[0]) for filename in self.img_files_val])
             self.img_files_val = [self.img_files_val[i] for i in sorted_indices]
             pose_path_val = os.path.join(self.base_dir_val, 'transforms.json')
             self.meta = json.load(open(pose_path_val))
         else:
-            self.base_dir_val = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'test')
+            # self.base_dir_val = os.path.join(base_dir, instance_dir, instance_id, degree_id, 'test')
+            self.base_dir_val = os.path.join(base_dir, 'test')
             self.img_files_val = os.listdir(os.path.join(self.base_dir_val, 'rgb'))
             sorted_indices = np.argsort([int(filename.split('_')[1].split('.')[0]) for filename in self.img_files_val])
             self.img_files_val = [self.img_files_val[i] for i in sorted_indices]
@@ -58,8 +59,14 @@ class SapienDataset(Dataset):
             
         w, h = self.img_wh
 
-        self.focal = 0.5*h/np.tan(0.5*self.meta['camera_angle_x'])
-        self.focal *= self.img_wh[0]/320 # modify focal length to match size self.img_wh
+        cam_x = self.meta.get('camera_angle_x', False)
+        if cam_x:
+            self.focal = 0.5*h/np.tan(0.5*self.meta['camera_angle_x'])
+            self.focal *= self.img_wh[0]/320 # modify focal length to match size self.img_wh
+        else:
+            self.focal = self.meta.get('focal', None)
+            if self.focal is None:
+                raise ValueError('focal length not found in transforms.json')
 
         # bounds, common for all scenes
         self.near = 2.0
@@ -114,8 +121,7 @@ class SapienDataset(Dataset):
         if self.split == 'val':
             return 1 # only validate 8 images (to support <=8 gpus)
         else:
-            return 60
-        # return len(self.meta['frames'])
+            return len(self.img_files_val) # return for testset
 
     def __getitem__(self, idx):
         if self.split == 'train': # use data in the buffers
