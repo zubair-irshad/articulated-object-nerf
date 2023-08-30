@@ -1,6 +1,6 @@
 {
     "urdf_file": "./data_base/scissor/10567/mobility.urdf",
-    "output_dir": "./data/scissor_test_pose",
+    "output_dir": "./data/scissor_saved_pose",
     "resolution": [640, 480],
     "render_pose_path": "./data/render_pose"
 }

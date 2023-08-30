@@ -73,7 +73,6 @@ def main(args):
     splits = ('train', 'test', 'val')
     if args.render_pose_path is not None:
         for split in splits:
-            
             generate_img_with_pose(args.render_pose_path, split, camera, asset, scene, object_path=output_path)
     else:
         print("generating images for training...")
